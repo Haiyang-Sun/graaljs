@@ -693,6 +693,7 @@ abstract class GraalJSTranslator extends com.oracle.js.parser.ir.visitor.Transla
             }
             genBlock = returnsResult ? factory.createGeneratorExprBlock(chunks, readState, writeState) : factory.createGeneratorVoidBlock(chunks, readState, writeState);
         }
+        tagHiddenExpression(genBlock);
         JavaScriptNode.transferSourceSectionAndTags(blockNode, genBlock);
         return genBlock;
     }
@@ -727,6 +728,7 @@ abstract class GraalJSTranslator extends com.oracle.js.parser.ir.visitor.Transla
         } else if (child instanceof JavaScriptNode) {
             String identifier = ":generatorexpr:" + environment.getFunctionFrameDescriptor().getSize();
             LazyReadFrameSlotNode readState = factory.createLazyReadFrameSlot(identifier);
+            tagHiddenExpression(readState);
             JavaScriptNode writeState = factory.createLazyWriteFrameSlot(identifier, (JavaScriptNode) child);
             if (NodeUtil.isReplacementSafe(parent, child, readState)) {
                 environment.getFunctionFrameDescriptor().addFrameSlot(identifier);
